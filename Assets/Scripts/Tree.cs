@@ -4,10 +4,7 @@ using UnityEngine;
 public class Tree : MonoBehaviour {
 
     public float waterPoints = 5f;
-
-    public int score = 0;
     public TextMeshProUGUI scoreText;
-
 
     [Header("Branch")]
     public float growthSpeedHeight;
@@ -57,8 +54,5 @@ public class Tree : MonoBehaviour {
         return branchObj;
     }
 
-    public void AddScore() {
-        score++;
-        scoreText.text = score.ToString();
-    }
+
 }

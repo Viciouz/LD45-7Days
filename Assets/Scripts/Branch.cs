@@ -59,7 +59,7 @@ public class Branch : MonoBehaviour {
             GameObject flowerObject = Instantiate(flowerPrefabs[Random.Range(0, flowerPrefabs.Count)], transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-1f, 1f)), Quaternion.Euler(0f, 0f, Random.Range(Tree.Instance.branchAngle * -1, Tree.Instance.branchAngle)), transform);
             leafs.Add(flowerObject);
             SoundManager.PlayRandomSfx(flowerSpawnSFX);
-            Tree.Instance.AddScore();
+            GameManager.Instance.AddScore();
         }
     }
 

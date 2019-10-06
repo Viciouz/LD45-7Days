@@ -32,18 +32,26 @@ public class GameManager : MonoBehaviour {
     public RectTransform startButton;
 
     public TextMeshProUGUI dayText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI bestText;
     public Color completeColor;
 
     public AudioClip levelCompleteSFX;
+    public AudioClip victorySFX;
     public AudioClip gameOverSFX;
 
     public List<float> cameraYPosition;
 
     public GameObject rain;
 
+    public Transform victoryPanel;
+
     public bool isLoading = false;
 
     public GameObject rootBranch;
+
+    public int score = 0;
+    public int highscore;
 
 
     public void Awake() {
@@ -53,6 +61,16 @@ public class GameManager : MonoBehaviour {
         } else {
             Destroy(this);
         }
+    }
+
+    private void Start() {
+        highscore = PlayerPrefs.GetInt("highscore", 0);
+        bestText.text = highscore.ToString();
+    }
+
+    public void AddScore() {
+        score++;
+        scoreText.text = score.ToString();
     }
 
     public void StartGame() {
@@ -87,12 +105,15 @@ public class GameManager : MonoBehaviour {
 
     public IEnumerator GameOver() {
         state = GameState.Gameover;
-        sunTransform.DOMove(new Vector3(0f,3f,0f), 0.5f);
+        sunTransform.DOMove(new Vector3(0f, 3f, 0f), 0.5f);
         Camera.main.DOColor(levelColors[6], 1f);
         Camera.main.transform.position = new Vector3(0f, 3f, -20f);
         Camera.main.orthographicSize = 3;
         Camera.main.transform.DOShakePosition(3f);
         SoundManager.PlayRandomSfx(gameOverSFX);
+        if (score > highscore) {
+            PlayerPrefs.SetInt("highscore", score);
+        }
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
@@ -104,8 +125,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator SetUpLevel() {   
-        if(level >= 6) {
+    public IEnumerator SetUpLevel() {
+        if (level >= 6) {
             isLoading = true;
             timeImage.DOColor(completeColor, 0.3f);
             timeImage.DOFillAmount(1, 0.3f);
@@ -113,7 +134,9 @@ public class GameManager : MonoBehaviour {
             Camera.main.DOColor(levelColors[2], 0.3f);
             sunSprite.DOColor(completeColor, 0.3f);
             innerSunSprite.DOColor(completeColor, 0.3f);
-     
+            victoryPanel.DOScale(1f, 0.3f);
+            SoundManager.PlayRandomSfx(victorySFX);
+
             state = GameState.Gameover;
             StopAllCoroutines();
         } else {
@@ -133,7 +156,7 @@ public class GameManager : MonoBehaviour {
             yield return new WaitForSeconds(1f);
             isLoading = false;
         }
-       
+
     }
 
 }
